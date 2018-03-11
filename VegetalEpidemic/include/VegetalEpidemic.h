@@ -38,8 +38,9 @@ private:
     {
         Pair<int>* config =0;
         int numberOfObjects=-1;
+        int numberOfInitialSickPlants=-1;
 
-        readConfiguration(fileName, config,numberOfObjects);
+        readConfiguration(fileName, config,numberOfObjects, numberOfInitialSickPlants);
 
         srand((int)time(0));
         for (int i = 0; i < nRows; ++i) {
@@ -58,11 +59,21 @@ private:
                 }
             }
         }
+
+        for (int n=0; n<numberOfInitialSickPlants;n++)
+        {
+            int i = (rand() % nCols);
+            int j = (rand() % nRows);
+
+            matrix[0][i][j] = 1;
+            matrix[1][i][j] = 1;
+
+        }
         delete [] config;
 
     }
 
-    void readConfiguration (const string & fileName, Pair<int>*& config, int & numberOfObjects)
+    void readConfiguration (const string & fileName, Pair<int>*& config, int & numberOfObjects, int & numberOfInitialSickPlants)
     {
         string line;
         int nLine=0;
@@ -78,6 +89,12 @@ private:
                     numberOfObjects = std::stoi(line);
                     config = new Pair<int>[numberOfObjects];
                 }
+                else if (nLine> numberOfObjects)
+                {
+                    istringstream iss(line);
+                    iss >> numberOfInitialSickPlants;
+                }
+
                 else
                 {
                     istringstream iss(line);

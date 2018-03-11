@@ -102,7 +102,7 @@ public:
 
         al_flip_display();
 
-        al_rest(0.3);
+//        al_rest(0.1);
 
         return true;
     }
