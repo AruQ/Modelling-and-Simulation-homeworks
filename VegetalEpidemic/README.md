@@ -1,4 +1,4 @@
-##Vegetal Epidemic 
+# Vegetal Epidemic 
 You want to create a cellular automaton to sketch the problem of propagation of an epidemic.
 Consider a simple (invented) ideal case of a plant disease, which propagates in cultivation, where the plants were placed in a square lattice, with the exception of the points, where are rocky outcrops.
 
