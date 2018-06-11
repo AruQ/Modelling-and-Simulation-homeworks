@@ -32,11 +32,10 @@ struct SeaSandMotionCA {
     struct CALRun2D* simulation;
 
     struct Configuration config;
-//    float weights [4]; //da leggere da file
 
-//    float probability_action [3];
+    bool changed = false;
+    bool stop = false;
 
-//    float density [3];
     int morgolusIndex;
 
 };
@@ -56,7 +55,7 @@ void createModel (CALModel2D* & model)
 {
 
     readConfiguration("../data/project.conf", CA.config);
-        printConfiguration(CA.config);
+    printConfiguration(CA.config);
 
     model = calCADef2D (CA.config.rows, CA.config.rows, CAL_CUSTOM_NEIGHBORHOOD_2D, CAL_SPACE_FLAT, CAL_NO_OPT);
 }
@@ -70,32 +69,26 @@ void initModel (CALModel2D* model)
     //INIZIALIZZAZIONE SOTTOSTATO
     CA.cellState = calAddSingleLayerSubstate2Di(model);
     initSubstate(model);
+    CA.morgolusIndex = 4;
 
 
-//    CA.weights[0] = 2.6f;
-//    CA.weights[1] = 2.6f;
-//    CA.weights[2]= 2.3f;
-//    CA.weights[3]= 2.3f;
+    //    CA.weights[0] = 2.6f;
+    //    CA.weights[1] = 2.6f;
+    //    CA.weights[2]= 2.3f;
+    //    CA.weights[3]= 2.3f;
 
 
 
-//    CA.probability_action [NO_CHANGE]=0.0f;
-//    CA.probability_action [ROTATE_LEFT]=0.5f;
-//    CA.probability_action [ROTATE_RIGHT]=1.0f;
+    //    CA.probability_action [NO_CHANGE]=0.0f;
+    //    CA.probability_action [ROTATE_LEFT]=0.5f;
+    //    CA.probability_action [ROTATE_RIGHT]=1.0f;
 
-//    CA.density[WATER] = 0.0f;
-//    CA.density[SAND_1] = 1.0f;
-//    CA.density[SAND_2] = 3.0f;
+    //    CA.density[WATER] = 0.0f;
+    //    CA.density[SAND_1] = 1.0f;
+    //    CA.density[SAND_2] = 3.0f;
 
 
     calAddElementaryProcess2D(model, transition_function);
-
-    printStateCells(model);
-
-
-
-
-
 
 
 }
@@ -109,12 +102,17 @@ void initSubstate (CALModel2D* model)
     {
         for (int j = CA.config.x1; j < CA.config.x2; ++j) {
 
-            calSetCurrent2Di(model, CA.cellState, i,j,SAND_1);
+            float p = (float)rand()/(float)RAND_MAX;
+            if (p<0.5f)
+                calSetCurrent2Di(model, CA.cellState, i,j,SAND_1);
+            else
+                calSetCurrent2Di(model, CA.cellState, i,j,SAND_2);
+
 
             //            cout<<calGet2Di(model, CA.cellState, i,j)<<"  ";
 
         }
-        cout<<endl;
+        //        cout<<endl;
     }
 }
 
@@ -134,16 +132,34 @@ void initMargolusNeighborhood(CALModel2D* model)
 
 }
 
-void transition_function (CALModel2D* model , int i, int j)
+void update_indices (CALModel2D* model)
 {
-    CA.morgolusIndex=0; //mettere come campo del CA.
-
-
 
     if (CA.simulation->step % 2 != 0) //mettere come steering
     {
         CA.morgolusIndex=4;
     }
+    else
+    {
+        CA.morgolusIndex=0; //mettere come campo del CA.
+
+    }
+
+    if(CA.changed == false)
+        CA.stop = true;
+
+    CA.changed = false;
+
+}
+
+CALbyte stopCondition (CALModel2D * model)
+{
+    return CA.stop;
+}
+
+void transition_function (CALModel2D* model , int i, int j)
+{
+
 
     int sumWeights [2] = {0,0};
 
@@ -203,21 +219,23 @@ void transition_function (CALModel2D* model , int i, int j)
 
     if (sumWeights[0] > sumWeights[1] )
     {
-//        cout<< sumWeights[0]<<"   "<<sumWeights[1]<< "e morgolus? "<< CA.morgolusIndex<<endl;
+        CA.changed = true;
+
+        //        cout<< sumWeights[0]<<"   "<<sumWeights[1]<< "e morgolus? "<< CA.morgolusIndex<<endl;
         float p = (float)rand()/(float)RAND_MAX;
         if(p > CA.config.probability_action[NO_CHANGE] &&  p<= CA.config.probability_action[ROTATE_LEFT])
         {
-//            cout<<"ruoto left ("<<i<<","<<j<<")"<<endl;
+            //            cout<<"ruoto left ("<<i<<","<<j<<")"<<endl;
 
             rotate_left(model,i,j);
 
-//            printStateCells(model);
+            //            printStateCells(model);
         }
         if(p > CA.config.probability_action[ROTATE_LEFT] &&  p<= CA.config.probability_action[ROTATE_RIGHT])
         {
-//            cout<<"ruoto right ("<<i<<","<<j<<")"<<endl;
+            //            cout<<"ruoto right ("<<i<<","<<j<<")"<<endl;
             rotate_right(model, i,j);
-//            printStateCells(model);
+            //            printStateCells(model);
         }
     }
 
@@ -230,10 +248,10 @@ void rotate_right (CALModel2D* model, int i, int j)
 {
 
     CELL_STATE tmpVector[4];
-//    int countNeighbouringCell = -1;
+    //    int countNeighbouringCell = -1;
     for (int n = 0; n < model->sizeof_X/2; n++ )
     {
-//        countNeighbouringCell++;
+        //        countNeighbouringCell++;
         tmpVector[n]= (CELL_STATE) calGetX2Di(model, CA.cellState,i,j,CA.morgolusIndex+n);
 
     }
@@ -249,11 +267,11 @@ void rotate_right (CALModel2D* model, int i, int j)
 void rotate_left (CALModel2D* model , int i, int j)
 {
 
-//    int countNeighbouringCell = -1;
+    //    int countNeighbouringCell = -1;
 
     int tmpVector[4];
 
-//    cout<<CA.morgolusIndex<<endl;
+    //    cout<<CA.morgolusIndex<<endl;
     for (int n = model->sizeof_X/2 -1 ; n >= 0; n-- )
     {
 
