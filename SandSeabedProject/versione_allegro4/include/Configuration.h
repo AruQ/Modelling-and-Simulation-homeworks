@@ -36,7 +36,7 @@ void readConfiguration (const string & fileName, Configuration& config)
     int nLine=0;
 
 
-    ifstream myfile (fileName);
+    ifstream myfile ("../data/project.conf");
     if (myfile.is_open())
     {
         while ( getline (myfile,line) )

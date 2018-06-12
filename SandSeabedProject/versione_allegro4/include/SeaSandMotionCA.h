@@ -1,6 +1,8 @@
 #ifndef SEASANDMOTION_H
 #define SEASANDMOTION_H
 
+#include <allegro.h>
+
 extern "C"{
 #include <OpenCAL/cal2DIO.h>
 #include <OpenCAL/cal2D.h>
@@ -57,7 +59,7 @@ void createModel (CALModel2D* & model)
     readConfiguration("../data/project.conf", CA.config);
     printConfiguration(CA.config);
 
-    model = calCADef2D (CA.config.rows, CA.config.rows, CAL_CUSTOM_NEIGHBORHOOD_2D, CAL_SPACE_FLAT, CAL_NO_OPT);
+    model = calCADef2D (CA.config.rows, CA.config.rows, CAL_CUSTOM_NEIGHBORHOOD_2D, CAL_SPACE_FLAT, CAL_OPT_ACTIVE_CELLS);
 }
 
 void initModel (CALModel2D* model)
@@ -70,22 +72,6 @@ void initModel (CALModel2D* model)
     CA.cellState = calAddSingleLayerSubstate2Di(model);
     initSubstate(model);
     CA.morgolusIndex = 4;
-
-
-    //    CA.weights[0] = 2.6f;
-    //    CA.weights[1] = 2.6f;
-    //    CA.weights[2]= 2.3f;
-    //    CA.weights[3]= 2.3f;
-
-
-
-    //    CA.probability_action [NO_CHANGE]=0.0f;
-    //    CA.probability_action [ROTATE_LEFT]=0.5f;
-    //    CA.probability_action [ROTATE_RIGHT]=1.0f;
-
-    //    CA.density[WATER] = 0.0f;
-    //    CA.density[SAND_1] = 1.0f;
-    //    CA.density[SAND_2] = 3.0f;
 
 
     calAddElementaryProcess2D(model, transition_function);
