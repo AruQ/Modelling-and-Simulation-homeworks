@@ -21,7 +21,7 @@ void steering_function (CALModel2D * model)
     update_indices(model);
 
 //    cout<<"STEP: "<<CA.simulation->step<<endl;
-    draw(model);
+//    draw(model);
 }
 
 
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 //    initModel(model);
     CA.simulation = calRunDef2D(model, 1, CA.config.STEPS, CAL_UPDATE_IMPLICIT);
 
-    initDrawer(900, 900);
+//    initDrawer(900, 900);
 
     calRunAddInitFunc2D(CA.simulation, initModel);
 

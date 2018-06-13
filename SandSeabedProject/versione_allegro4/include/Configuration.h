@@ -140,6 +140,7 @@ void printConfiguration (Configuration& config)
     cout<<"X1: "<<config.x1<<" X2: "<<config.x2<<endl;
 
     cout<<"Y1: "<<config.y1<<" Y2: "<<config.y2<<endl;
+    cout<<"Steps:"<<config.STEPS<<endl;
 
     cout<<"____________________________________" <<endl;
 
