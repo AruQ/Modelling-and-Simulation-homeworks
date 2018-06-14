@@ -8,6 +8,7 @@ using namespace std;
 template <typename T>
 string NumberToString ( T Number )
 {
+
     ostringstream ss;
     ss << Number;
     return ss.str();
@@ -21,7 +22,8 @@ void steering_function (CALModel2D * model)
     update_indices(model);
 
 //    cout<<"STEP: "<<CA.simulation->step<<endl;
-//    draw(model);
+    if(CA.simulation->step%2 ==0)
+        draw(model);
 }
 
 
@@ -35,26 +37,26 @@ int main(int argc, char** argv)
     CALModel2D* model;
 
     createModel(model);
-//    initModel(model);
+    //    initModel(model);
     CA.simulation = calRunDef2D(model, 1, CA.config.STEPS, CAL_UPDATE_IMPLICIT);
 
-//    initDrawer(1000, 1000);
+    initDrawer(1000, 1000);
 
     calRunAddInitFunc2D(CA.simulation, initModel);
 
-//    calRunAddSteeringFunc2D(CA.simulation,printStateCells);
+    //    calRunAddSteeringFunc2D(CA.simulation,printStateCells);
 
     calRunAddSteeringFunc2D(CA.simulation, steering_function);
 
-//    calRunAddGlobalTransitionFunc2D(CA.simulation, draw);
+    //    calRunAddGlobalTransitionFunc2D(CA.simulation, draw);
 
     calRunAddStopConditionFunc2D(CA.simulation, stopCondition);
 
     calRun2D(CA.simulation);
 
-//    draw (model);
+    draw (model);
 
-//    destroyDisplay();
+    destroyDisplay();
 
 
 

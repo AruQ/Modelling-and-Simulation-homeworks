@@ -57,7 +57,7 @@ void createModel (CALModel2D* & model)
     readConfiguration("../data/project.conf", CA.config);
     printConfiguration(CA.config);
 
-    model = calCADef2D (CA.config.rows, CA.config.rows, CAL_CUSTOM_NEIGHBORHOOD_2D, CAL_SPACE_FLAT, CAL_NO_OPT);
+    model = calCADef2D (CA.config.rows, CA.config.rows, CAL_CUSTOM_NEIGHBORHOOD_2D, CAL_SPACE_FLAT, CAL_OPT_ACTIVE_CELLS);
 }
 
 void initModel (CALModel2D* model)
@@ -67,10 +67,12 @@ void initModel (CALModel2D* model)
 
 
     //INIZIALIZZAZIONE SOTTOSTATO
-    CA.cellState = calAddSingleLayerSubstate2Di(model);
+    //    CA.cellState = calAddSingleLayerSubstate2Di(model);
+    CA.cellState = calAddSubstate2Di(model);
     initSubstate(model);
     CA.morgolusIndex = 4;
 
+//    printStateCells(model);
 
     //    CA.weights[0] = 2.6f;
     //    CA.weights[1] = 2.6f;
@@ -102,11 +104,12 @@ void initSubstate (CALModel2D* model)
     {
         for (int j = CA.config.x1; j < CA.config.x2; ++j) {
 
+            //            calSet2Di(model, CA.cellState, i,j,SAND_1);
             float p = (float)rand()/(float)RAND_MAX;
             if (p<0.5f)
-                calSetCurrent2Di(model, CA.cellState, i,j,SAND_1);
+                calSet2Di(model, CA.cellState, i,j,SAND_1);
             else
-                calSetCurrent2Di(model, CA.cellState, i,j,SAND_2);
+                calSet2Di(model, CA.cellState, i,j,SAND_2);
 
 
             //            cout<<calGet2Di(model, CA.cellState, i,j)<<"  ";
@@ -161,12 +164,23 @@ void transition_function (CALModel2D* model , int i, int j)
 {
 
 
+    //    if (CA.morgolusIndex == 4 && (i%2 != 0 || j%2 != 0))
+    //    {
+    //        return;
+    //    }
+
+    if (i%2 == 0 || j%2 == 0)
+    {
+        return;
+    }
+
     int sumWeights [2] = {0,0};
 
-    //    cout<<"indice di margolus "<<CA.morgolusIndex<<endl;
+    //        cout<<"indice di margolus "<<CA.morgolusIndex<<"    |     ";
 
 
-    //    cout<<"cella: ("<<i<<","<<j<<") ";
+    //    printStateCells(model);
+    //    cout<<"cella: ("<<i<<","<<j<<") \n";
 
     int countNeighbouringCell = -1;
     for (int n = 0; n < model->sizeof_X/2; n++ )
@@ -217,25 +231,25 @@ void transition_function (CALModel2D* model , int i, int j)
     //        rotate_right(model,i,j);
     //    }
 
+    CA.changed = true;
     if (sumWeights[0] > sumWeights[1] )
     {
-        CA.changed = true;
 
-        //        cout<< sumWeights[0]<<"   "<<sumWeights[1]<< "e morgolus? "<< CA.morgolusIndex<<endl;
+//        cout<< sumWeights[0]<<"   "<<sumWeights[1]<< " e morgolus? "<< CA.morgolusIndex<<endl;
         float p = (float)rand()/(float)RAND_MAX;
         if(p > CA.config.probability_action[NO_CHANGE] &&  p<= CA.config.probability_action[ROTATE_LEFT])
         {
-            //            cout<<"ruoto left ("<<i<<","<<j<<")"<<endl;
+            //                        cout<<"ruoto left ("<<i<<","<<j<<")"<<endl;
 
             rotate_left(model,i,j);
 
-            //            printStateCells(model);
+            //                        printStateCells(model);
         }
         if(p > CA.config.probability_action[ROTATE_LEFT] &&  p<= CA.config.probability_action[ROTATE_RIGHT])
         {
-            //            cout<<"ruoto right ("<<i<<","<<j<<")"<<endl;
+            //                        cout<<"ruoto right ("<<i<<","<<j<<")"<<endl;
             rotate_right(model, i,j);
-            //            printStateCells(model);
+            //                        printStateCells(model);
         }
     }
 
@@ -258,7 +272,7 @@ void rotate_right (CALModel2D* model, int i, int j)
 
     for (int n = 0; n < model->sizeof_X/2; ++n) {
 
-        calSetCurrentX2Di(model, CA.cellState, i,j, CA.morgolusIndex+(MOD((n+1), model->sizeof_X/2)) , tmpVector[n]);
+        calSetX2Di(model, CA.cellState, i,j, CA.morgolusIndex+(MOD((n+1), model->sizeof_X/2)) , tmpVector[n]);
     }
 
 }
@@ -282,7 +296,7 @@ void rotate_left (CALModel2D* model , int i, int j)
     for (int n = model->sizeof_X/2 -1 ; n >= 0; n-- )
     {
 
-        calSetCurrentX2Di(model, CA.cellState, i,j, CA.morgolusIndex+(MOD((n-1), (model->sizeof_X/2))) , tmpVector[n]);
+        calSetX2Di(model, CA.cellState, i,j, CA.morgolusIndex+(MOD((n-1), (model->sizeof_X/2))) , tmpVector[n]);
     }
 
 

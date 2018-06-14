@@ -138,6 +138,8 @@ void draw(CALModel2D * model)
         al_rest(0.0);
     }
 
+//    al_rest(3.50);
+
 }
 
 
