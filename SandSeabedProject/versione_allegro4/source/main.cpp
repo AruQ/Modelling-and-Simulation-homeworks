@@ -3,6 +3,7 @@
 #include "../include/Drawer.h"
 
 
+//g++  main.cpp -o ciao `allegro-config --libs` -I/usr/local/opencal-1.0/include -L/usr/local/opencal-1.0/lib -lopencal --std=c++03
 
 using namespace std;
 template <typename T>
@@ -20,8 +21,10 @@ void steering_function (CALModel2D * model)
 {
     update_indices(model);
 
-//    cout<<"STEP: "<<CA.simulation->step<<endl;
-//    draw(model);
+    //    cout<<"STEP: "<<CA.simulation->step<<endl;
+
+//    if ( CA.simulation->step % 2 == 0)
+        draw(model);
 }
 
 
@@ -35,30 +38,30 @@ int main(int argc, char** argv)
     CALModel2D* model;
 
     createModel(model);
-//    initModel(model);
+    //    initModel(model);
     CA.simulation = calRunDef2D(model, 1, CA.config.STEPS, CAL_UPDATE_IMPLICIT);
 
-//    initDrawer(900, 900);
+    initDrawer(900, 900);
 
     calRunAddInitFunc2D(CA.simulation, initModel);
 
-//    calRunAddSteeringFunc2D(CA.simulation,printStateCells);
+    //    calRunAddSteeringFunc2D(CA.simulation,printStateCells);
 
     calRunAddSteeringFunc2D(CA.simulation, steering_function);
 
-//    calRunAddGlobalTransitionFunc2D(CA.simulation, draw);
+    //    calRunAddGlobalTransitionFunc2D(CA.simulation, draw);
 
     calRunAddStopConditionFunc2D(CA.simulation, stopCondition);
 
     calRun2D(CA.simulation);
 
-//    draw (model);
+    draw (model);
 
-//    destroyDisplay();
+    //    destroyDisplay();
 
 
 
-//    printStateCells(model);
+    //    printStateCells(model);
 
 
 
