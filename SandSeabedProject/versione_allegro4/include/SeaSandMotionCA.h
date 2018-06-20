@@ -40,6 +40,11 @@ struct SeaSandMotionCA {
 
     int morgolusIndex;
 
+    int countParticle[3];
+    double force = 0.0;
+    double thresholdForce = 10.0;
+    double deltaForce = 0.4;
+
 };
 void initMargolusNeighborhood(CALModel2D* model);
 void transition_function (CALModel2D* model , int i, int j);
@@ -49,7 +54,12 @@ void printStateCells (CALModel2D* model);
 void initSubstate (CALModel2D* model);
 
 
+
+
 SeaSandMotionCA CA;
+
+void incrementForce ();
+void decrementForce ();
 
 
 
@@ -82,6 +92,9 @@ void initModel (CALModel2D* model)
 void initSubstate (CALModel2D* model)
 {
 
+    CA.countParticle[WATER]=-1;
+    CA.countParticle[SAND_1]=0;
+    CA.countParticle[SAND_2]=0;
 
     calInitSubstate2Di(model, CA.cellState, WATER );
     for(int i = CA.config.y1; i<CA.config.y2; i++)
@@ -94,10 +107,16 @@ void initSubstate (CALModel2D* model)
 
                 p = (float)rand()/(float)RAND_MAX;
                 if (p<0.5f)
+                {
                     calSet2Di(model, CA.cellState, i,j,SAND_1);
+                    CA.countParticle[SAND_1]++;
+                }
                 else
-                    calSet2Di(model, CA.cellState, i,j,SAND_2);
+                {
 
+                    calSet2Di(model, CA.cellState, i,j,SAND_2);
+                    CA.countParticle[SAND_2]++;
+                }
             }
             //            cout<<calGet2Di(model, CA.cellState, i,j)<<"  ";
 
@@ -286,6 +305,26 @@ void rotate_left (CALModel2D* model , int i, int j)
     }
 
 
+
+}
+
+
+void incrementForce ()
+{
+    CA.force += CA.deltaForce;
+    if (CA.force > CA.thresholdForce)
+    {
+        CA.force = CA.thresholdForce;
+    }
+}
+
+void decrementForce ()
+{
+    CA.force -= CA.deltaForce;
+    if (CA.force < 0)
+    {
+        CA.force = 0;
+    }
 
 }
 

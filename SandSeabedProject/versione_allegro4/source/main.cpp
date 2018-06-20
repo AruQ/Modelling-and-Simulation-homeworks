@@ -23,8 +23,16 @@ void steering_function (CALModel2D * model)
 
     //    cout<<"STEP: "<<CA.simulation->step<<endl;
 
-//    if ( CA.simulation->step % 2 == 0)
+    if ( CA.simulation->step % 5 == 0)
         draw(model);
+}
+
+void init_function (CALModel2D * model)
+{
+
+    initModel(model);
+    initDrawer(model->columns, model->rows);
+
 }
 
 
@@ -41,9 +49,9 @@ int main(int argc, char** argv)
     //    initModel(model);
     CA.simulation = calRunDef2D(model, 1, CA.config.STEPS, CAL_UPDATE_IMPLICIT);
 
-    initDrawer(900, 900);
 
-    calRunAddInitFunc2D(CA.simulation, initModel);
+
+    calRunAddInitFunc2D(CA.simulation, init_function);
 
     //    calRunAddSteeringFunc2D(CA.simulation,printStateCells);
 
@@ -55,7 +63,7 @@ int main(int argc, char** argv)
 
     calRun2D(CA.simulation);
 
-    draw (model);
+//    draw (model);
 
     //    destroyDisplay();
 
