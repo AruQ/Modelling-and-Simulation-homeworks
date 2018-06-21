@@ -182,7 +182,7 @@ bool initDrawer (int _width, int _height) {
     sprintf(iteration_text [0], "N Sand_1: %d  ", CA.countParticle[SAND_1]);
     sprintf(iteration_text [1], "N Sand_2: %d  ", CA.countParticle[SAND_2]);
 
-    sprintf(iteration_text [3], "Forza: %.2f  ", CA.force);
+    sprintf(iteration_text [3], "Forza: %.2f  ", CA.energy_total);
 
 
 
@@ -266,16 +266,16 @@ void draw(CALModel2D * model)
 
     if (releaed_plus)
     {
-        incrementForce();
+        incrementForce(model);
         releaed_plus = false;
-        sprintf(iteration_text [3], "Forza: %.2f  ", CA.force);
+        sprintf(iteration_text [3], "Forza: %.2f  ", CA.energy_total);
     }
 
     if (releaed_minus)
     {
-        decrementForce();
+        decrementForce(model);
         releaed_minus = false;
-        sprintf(iteration_text [3], "Forza: %.2f  ", CA.force);
+        sprintf(iteration_text [3], "Forza: %.2f  ", CA.energy_total);
     }
 
 

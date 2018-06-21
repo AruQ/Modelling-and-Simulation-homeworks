@@ -23,7 +23,7 @@ void steering_function (CALModel2D * model)
 
     //    cout<<"STEP: "<<CA.simulation->step<<endl;
 
-    if ( CA.simulation->step % 5 == 0)
+    if ( CA.simulation->step % 3 == 0)
         draw(model);
 }
 

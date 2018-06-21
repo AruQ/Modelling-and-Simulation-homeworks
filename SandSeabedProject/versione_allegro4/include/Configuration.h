@@ -13,10 +13,9 @@ enum ACTION{NO_CHANGE=0, ROTATE_LEFT, ROTATE_RIGHT};
 enum CELL_STATE{WATER=0, SAND_1, SAND_2};
 enum POSITION{LEFT_UP=0, RIGHT_UP, LEFT_DOWN, RIGHT_DOWN};
 
+
 struct Configuration
 {
-    float weights [4]; //da leggere da file
-    float probability_action [3];
     float density [3];
     int rows,columns;
     int x1, x2;
@@ -51,29 +50,9 @@ void readConfiguration (const string & fileName, Configuration& config)
                 }
 
             }
+
+
             else if (nLine==1)
-            {
-                istringstream iss(line);
-
-                for (int n = 0; n < 3; ++n) {
-                    iss >> config.probability_action[n];
-
-                }
-
-            }
-
-            else if (nLine==2)
-            {
-                istringstream iss(line);
-
-                for (int n = 0; n < 4; ++n) {
-                    iss >> config.weights[n];
-
-                }
-
-            }
-
-            else if (nLine==3)
             {
                 istringstream iss(line);
                 iss >> config.rows;
@@ -81,7 +60,7 @@ void readConfiguration (const string & fileName, Configuration& config)
 
             }
 
-            else if (nLine==4)
+            else if (nLine==2)
             {
                 istringstream iss(line);
                 iss >> config.x1;
@@ -89,7 +68,7 @@ void readConfiguration (const string & fileName, Configuration& config)
 
             }
 
-            else if (nLine==5)
+            else if (nLine==3)
             {
                 istringstream iss(line);
                 iss >> config.y1;
@@ -97,7 +76,7 @@ void readConfiguration (const string & fileName, Configuration& config)
 
             }
 
-            else if (nLine==6)
+            else if (nLine==4)
             {
                 istringstream iss(line);
                 iss >> config.STEPS;
@@ -120,18 +99,6 @@ void printConfiguration (Configuration& config)
     cout<<"Density: ";
     for (int i = 0; i < 3; ++i) {
         cout<<config.density[i]<<"  ";
-    }
-    cout<<endl;
-
-    cout<<"Probability_action: ";
-    for (int i = 0; i < 3; ++i) {
-        cout<<config.probability_action[i]<<"  ";
-    }
-    cout<<endl;
-
-    cout<<"Weights: ";
-    for (int i = 0; i < 4; ++i) {
-        cout<<config.weights[i]<<"  ";
     }
     cout<<endl;
 
