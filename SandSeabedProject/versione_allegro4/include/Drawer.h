@@ -47,6 +47,17 @@ const char *filename_minus = "../data/minus1.tga";
 
 char iteration_text [4][100];
 
+volatile int close_button_pressed = FALSE;
+
+
+
+void close_button_handler(void)
+{
+    close_button_pressed = TRUE;
+}
+
+END_OF_FUNCTION(close_button_handler)
+
 int textout_hack( BITMAP *bmp , FONT* font , int x , int y , double multiplier , char *msg , int color )
 {
     BITMAP *tmp;
@@ -131,6 +142,9 @@ bool initDrawer (int _width, int _height) {
     allegro_init();
     install_keyboard();
     install_mouse();
+
+    LOCK_FUNCTION(close_button_handler);
+    set_close_button_callback(close_button_handler);
 
     set_gfx_mode( GFX_AUTODETECT_WINDOWED, drawer.width, drawer.height, 0, 0);
 
@@ -292,8 +306,12 @@ void draw(CALModel2D * model)
     /* you must always release bitmaps before calling any input functions */
     release_screen();
 
+    if (close_button_pressed ==TRUE)
+    {
+        CA.stop = true;
+    }
+
     /* wait for a key press */
-    //    readkey();
 
 
 }

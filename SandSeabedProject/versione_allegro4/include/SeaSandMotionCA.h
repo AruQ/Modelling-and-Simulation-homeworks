@@ -32,8 +32,7 @@ struct SeaSandMotionCA {
     struct CALRun2D* simulation;
     
     struct Configuration config;
-    
-    bool changed = false;
+
     bool stop = false;
     
     int morgolusIndex;
@@ -165,10 +164,7 @@ void update_indices (CALModel2D* model)
         
     }
     
-    if(CA.changed == false)
-        CA.stop = true;
-    
-    CA.changed = false;
+
     
 }
 

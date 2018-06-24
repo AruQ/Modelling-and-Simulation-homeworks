@@ -3,7 +3,7 @@
 #include "../include/Drawer.h"
 
 
-//g++  main.cpp -o ciao `allegro-config --libs` -I/usr/local/opencal-1.0/include -L/usr/local/opencal-1.0/lib -lopencal --std=c++03
+//g++  main.cpp -o ../bin/main `allegro-config --libs` -I/usr/local/opencal-1.0/include -L/usr/local/opencal-1.0/lib -lopencal --std=c++03
 
 using namespace std;
 
@@ -58,14 +58,6 @@ int main(int argc, char** argv)
 
     calRunFinalize2D(CA.simulation);
     calFinalize2D(model);
-
-
-    //    destroyDisplay();
-
-
-
-    //    printStateCells(model);
-
 
 
     return 0;
