@@ -26,12 +26,8 @@ extern "C"{
 #define ABS_VAL(a) ((a<0)? a*-1:a)
 
 
-
-//enum ACTION{NO_CHANGE=0, ROTATE_LEFT, ROTATE_RIGHT};
-//enum CELL_STATE{WATER=0, SAND_1, SAND_2};
-
 struct SeaSandMotionCA {
-    //struct CALModel2D* model;
+
     struct CALSubstate2Di *cellState;
     struct CALRun2D* simulation;
     
@@ -79,7 +75,7 @@ void createModel (CALModel2D* & model)
 {
     
     readConfiguration("../data/project.conf", CA.config);
-    printConfiguration(CA.config);
+//    printConfiguration(CA.config);
     
     model = calCADef2D (CA.config.rows, CA.config.rows, CAL_CUSTOM_NEIGHBORHOOD_2D, CAL_SPACE_FLAT, CAL_OPT_ACTIVE_CELLS);
 }
@@ -133,10 +129,10 @@ void initSubstate (CALModel2D* model)
                     CA.countParticle[SAND_2]++;
                 }
             }
-            //            cout<<calGet2Di(model, CA.cellState, i,j)<<"  ";
+
             
         }
-        //        cout<<endl;
+
     }
 }
 
@@ -185,21 +181,12 @@ void transition_function (CALModel2D* model , int i, int j)
 {
     
 
-
-    //    cout<<"la riga è "<<i<<" moltiplicatore "<<local_energy<<endl;
-    
-    
+       
     if (i%2 == 0 || j%2 == 0)
     {
         return;
     }
     
-    
-    
-    //    cout<<"indice di margolus "<<CA.morgolusIndex<<endl;
-    
-    
-    //    cout<<"cella: ("<<i<<","<<j<<") ";
     
     int countNeighbouringCell = -1;
     
@@ -218,12 +205,7 @@ void transition_function (CALModel2D* model , int i, int j)
         
         if (i+model->X[CA.morgolusIndex+n].i < 0 || i+model->X[CA.morgolusIndex+n].i >= model->rows)
             return;
-        
-        //        cout<<"il vicino che stiamo considerando ("<<i+model->X[CA.morgolusIndex+n].i <<","<<
-        //              j+model->X[CA.morgolusIndex+n].j<<") | "<<endl;
-        
-        
-        
+
         
         
         CELL_STATE state = (CELL_STATE)calGetX2Di(model, CA.cellState,i,j,CA.morgolusIndex+n);
@@ -245,16 +227,6 @@ void transition_function (CALModel2D* model , int i, int j)
         {
             sumWeights[1] += CA.config.density[state];
         }
-        
-        
-        
-        
-        
-        
-        
-        //        std::cout<<"il vicino n="<<n<<" di "<<i<<" --- "<<j<<" è "<<calGetX2Di(model, CA.cellState,i,j,n)<<" || ";
-        
-        //        std::cout<<"con il pattern i="<<model->X[n].i<<" j= "<<model->X[n].j<<std::endl;
     }
 
 
@@ -264,16 +236,6 @@ void transition_function (CALModel2D* model , int i, int j)
         return;
     
 
-
-    
-
-    
-    
-    //    if (i ==4 && j ==4)
-    //    {
-    //        rotate_right(model,i,j);
-    //    }
-    
 
     float local_energy = CA.energy_total - i * CA.energy_row_multiplicator;
 
@@ -292,20 +254,18 @@ void transition_function (CALModel2D* model , int i, int j)
         float min_delta = MIN(delta[NO_CHANGE], delta[ROTATE_LEFT]);
         min_delta = MIN(min_delta, delta[ROTATE_RIGHT]);
 
-        //        cout<<"min delta: "<< min_delta << endl;
-
         for (int i = 0; i < 3; ++i) {
 
-            //            cout<<"delta prima["<<i<<"]="<<delta[i]<<endl;
+
             delta[i] =  delta[i] - min_delta;
-            //            cout<<"delta dopo["<<i<<"]="<<delta[i]<<endl;
+
 
             sum+= delta[i];
         }
 
         for (int i = 0; i < 3; ++i) {
             probability_action [i] = delta[i] /sum;
-            //            cout<< "prob ["<<i<<"]="<<probability_action[i]<<endl;
+
         }
 
     }
@@ -322,13 +282,12 @@ void transition_function (CALModel2D* model , int i, int j)
 
         for (int i = 0; i < 3; ++i) {
             probability_action [i] = delta[i] /sum;
-            //            cout<< "prob ["<<i<<"]="<<probability_action[i]<<endl;
+
         }
 
     }
 
     ACTION actionToPerform = getActionWithProbability(probability_action);
-    //    cout<<"l'azione suggerita: "<<actionToPerform<<endl;
 
     if (actionToPerform == ROTATE_LEFT)
     {
@@ -340,32 +299,6 @@ void transition_function (CALModel2D* model , int i, int j)
         rotate_right(model,i,j);
     }
 
-    
-    
-    
-    //    if (sumWeights[0] > sumWeights[1] )
-    //    {
-    //        CA.changed = true;
-
-    //        //        cout<< sumWeights[0]<<"   "<<sumWeights[1]<< "e morgolus? "<< CA.morgolusIndex<<endl;
-    //        float p = (float)rand()/(float)RAND_MAX;
-    //        if(p > CA.config.probability_action[NO_CHANGE] &&  p<= CA.config.probability_action[ROTATE_LEFT])
-    //        {
-    //            //            cout<<"ruoto left ("<<i<<","<<j<<")"<<endl;
-
-    //            rotate_left(model,i,j);
-
-    //            //            printStateCells(model);
-    //        }
-    //        if(p > CA.config.probability_action[ROTATE_LEFT] &&  p<= CA.config.probability_action[ROTATE_RIGHT])
-    //        {
-    //            //            cout<<"ruoto right ("<<i<<","<<j<<")"<<endl;
-    //            rotate_right(model, i,j);
-    //            //            printStateCells(model);
-    //        }
-    //    }
-    
-    
     
     
 }
@@ -397,11 +330,6 @@ ACTION getActionWithProbability (float probability_action[3])
     probability_action[2] = probability_action[1] + probability_action[2];
 
 
-    //    for (int i = 0; i < 3; ++i) {
-    //        cout << "prob_action ["<<i<<"]="<<probability_action[i]<<endl;
-    //        cout<<"Lazione associata è "<<actions[i]<<endl;
-    //    }
-
 
     float p = (float)rand()/(float)RAND_MAX;
 
@@ -430,7 +358,7 @@ ACTION getActionWithProbability (float probability_action[3])
 float getDeltaRotateLeft (CALModel2D* model, int i, int j)
 {
 
-    //    cout<<"-----"<<endl;
+
     float sumWeights [2] = {0,0};
     int countNeighbouringCell = -1;
     for (int n = 0; n < model->sizeof_X/2; n++ )
@@ -438,9 +366,7 @@ float getDeltaRotateLeft (CALModel2D* model, int i, int j)
         countNeighbouringCell++;
 
         CELL_STATE state = (CELL_STATE)calGetX2Di(model, CA.cellState, i,j, CA.morgolusIndex+(MOD((n+1), model->sizeof_X/2)));
-        
-        //        CELL_STATE state = (CELL_STATE) calGetX2Di(model, CA.cellState,i,j,CA.morgolusIndex+n);
-        //        cout<<state<<endl;
+
         if(countNeighbouringCell < 2)
         {
             
@@ -451,11 +377,10 @@ float getDeltaRotateLeft (CALModel2D* model, int i, int j)
         {
             sumWeights[1] += CA.config.density[state];
         }
-        //        tmpVector[n]= (CELL_STATE) calGetX2Di(model, CA.cellState,i,j,CA.morgolusIndex+n);
         
     }
 
-    //    cout<<"rotate left => "<< sumWeights[0]<<"   "<<sumWeights[1]<< "e morgolus? "<< CA.morgolusIndex<<endl;
+
     return sumWeights[1]- sumWeights[0];
     
     
@@ -463,7 +388,7 @@ float getDeltaRotateLeft (CALModel2D* model, int i, int j)
 
 float getDeltaRotateRight (CALModel2D* model, int i, int j)
 {
-    //    cout<<"-----"<<endl;
+
     float sumWeights [2] = {0,0};
     int countNeighbouringCell = -1;
     //        printStateCells(model);
@@ -473,8 +398,6 @@ float getDeltaRotateRight (CALModel2D* model, int i, int j)
 
         CELL_STATE state = (CELL_STATE)calGetX2Di(model, CA.cellState, i,j, CA.morgolusIndex+(MOD((n-1), (model->sizeof_X/2))));
 
-
-        //        cout<<state<<endl;
 
         if(countNeighbouringCell < 2)
         {
@@ -490,7 +413,7 @@ float getDeltaRotateRight (CALModel2D* model, int i, int j)
 
     }
 
-    //    cout<<"rotate right => "<< sumWeights[0]<<"   "<<sumWeights[1]<< "e morgolus? "<< CA.morgolusIndex<<endl;
+
     return sumWeights[1]- sumWeights[0];
 
 
@@ -500,10 +423,10 @@ void rotate_right (CALModel2D* model, int i, int j)
 {
     
     CELL_STATE tmpVector[4];
-    //    int countNeighbouringCell = -1;
+
     for (int n = 0; n < model->sizeof_X/2; n++ )
     {
-        //        countNeighbouringCell++;
+
         tmpVector[n]= (CELL_STATE) calGetX2Di(model, CA.cellState,i,j,CA.morgolusIndex+n);
         
     }
@@ -519,21 +442,17 @@ void rotate_right (CALModel2D* model, int i, int j)
 void rotate_left (CALModel2D* model , int i, int j)
 {
     
-    //    int countNeighbouringCell = -1;
+   ;
     
     int tmpVector[4];
     
-    //    cout<<CA.morgolusIndex<<endl;
+
     for (int n = model->sizeof_X/2 -1 ; n >= 0; n-- )
     {
-        
-        tmpVector[n]= (CELL_STATE) calGetX2Di(model, CA.cellState,i,j,CA.morgolusIndex+n);
-        
-        
+        tmpVector[n]= (CELL_STATE) calGetX2Di(model, CA.cellState,i,j,CA.morgolusIndex+n);  
     }
     for (int n = model->sizeof_X/2 -1 ; n >= 0; n-- )
-    {
-        
+    { 
         calSetX2Di(model, CA.cellState, i,j, CA.morgolusIndex+(MOD((n-1), (model->sizeof_X/2))) , tmpVector[n]);
     }
     

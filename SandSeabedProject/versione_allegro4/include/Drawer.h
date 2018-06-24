@@ -28,18 +28,10 @@ struct Image
     BITMAP * bitmap;
 };
 
-//struct Image
-//{
-//    BITMAP * image;
-//    int x,y,width;
-
-//};
 
 Drawer drawer;
 
-////BITMAP * image;
-//BITMAP * image_plus_resized;
-//BITMAP * image_minus_resized;
+
 
 Image image_plus;
 Image image_minus;
@@ -66,7 +58,7 @@ int textout_hack( BITMAP *bmp , FONT* font , int x , int y , double multiplier ,
 
     clear_to_color( tmp , drawer.colorBackground );
     textout_ex( tmp, font, msg, 0, 0, color, -1) ;
-    //    textprintf_ex(tmp, font,0,0,color,-1,"itera 4 %i",4);
+
 
     masked_stretch_blit( tmp , bmp , 0 , 0 , tmp -> w , tmp -> h , x , y , (int)(tmp -> w * multiplier), (int)(tmp -> h * multiplier));
 
@@ -81,10 +73,6 @@ bool drawList (int startingX, int y, double multiplier)
 
     int x = startingX;
     int increment = text_height(font);
-
-    //    cout<< "0) "<<iteration_text[0]<<" increment "<<increment<<endl;
-    //    cout<<"1) "<< iteration_text[1]<<endl;
-    //    cout<<"2) "<< iteration_text[2]<<endl;
 
 
     textout_hack(drawer.buffer, font, x, y, multiplier, iteration_text[0], makecol(255, 255, 255));
@@ -119,20 +107,6 @@ bool loadImages ()
 
 }
 
-//bool displayBitmap (BITMAP * buffer)
-//{
-//    BITMAP *bmp;
-//    PALETTE palette;
-
-//    bmp = load_bitmap("../data/plus.png", palette);
-//    if (!bmp)
-//        return false;
-//    //        allegro_error("Couldn't load image.pcx!");
-
-//    blit(bmp,buffer,0,0,0,0,10,10);
-//    destroy_bitmap(bmp);
-//    return true;
-//}
 
 
 bool initDrawer (int _width, int _height) {
@@ -192,12 +166,6 @@ bool initDrawer (int _width, int _height) {
 
 }
 
-void destroyDisplay ()
-{
-    //    al_destroy_display(drawer.display);
-    //    al_destroy_event_queue(drawer.event_queue);
-}
-
 
 bool pressed= false;
 bool releaed_plus = false;
@@ -220,7 +188,6 @@ void draw(CALModel2D * model)
       */
     acquire_screen();
 
-    //    cout<< "mouse_x: "<<mouse_x<<" mouse_y: "<<mouse_y<<endl;
 
     if (mouse_x >= image_plus.image_x && mouse_x <= image_plus.image_x+ image_plus.image_w
             && mouse_y >= image_plus.image_y && mouse_y <= image_plus.image_y + image_plus.image_h)
@@ -278,16 +245,7 @@ void draw(CALModel2D * model)
         sprintf(iteration_text [3], "Energia: %.2f  ", CA.energy_total);
     }
 
-
-//    cout<<iteration_text[3]<<endl;
-
-
-
-
     clear_to_color(drawer.buffer, drawer.colorBackground);
-
-
-
 
     for (int i = 0; i < CA.config.rows; ++i) {
         for (int j = 0; j < CA.config.columns; ++j) {
@@ -314,7 +272,7 @@ void draw(CALModel2D * model)
 
     sprintf(iteration_text [2], "# iterazioni: %d  ", CA.simulation->step);
 
-    //    textout_hack(drawer.buffer, font, 10, drawer.height-drawer.heightPanel, 2, iteration_text[2], makecol(255, 255, 255));
+
     drawList (10, drawer.height-drawer.heightPanel, 1.5 );
 
     textout_hack(drawer.buffer, font, image_minus.image_x+ image_minus.image_w +10 ,
