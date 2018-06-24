@@ -21,6 +21,7 @@ struct Configuration
     int x1, x2;
     int y1, y2;
     int STEPS;
+    int force;
 
 };
 
@@ -80,6 +81,11 @@ void readConfiguration (const string & fileName, Configuration& config)
             {
                 istringstream iss(line);
                 iss >> config.STEPS;
+            }
+            else if (nLine==5)
+            {
+                istringstream iss(line);
+                iss >> config.force;
             }
             nLine++;
 

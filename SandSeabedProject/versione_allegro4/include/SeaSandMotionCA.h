@@ -44,7 +44,7 @@ struct SeaSandMotionCA {
     
     int countParticle[3];
     double energy_total = 10.0;
-    double thresholdEnergy = 2000.0;
+    double thresholdEnergy = 2500.0;
     double deltaincrementEnergy = 10.0;
     double deltaincrementEnergyLessThan10 = 2.0;
 
@@ -88,6 +88,8 @@ void initModel (CALModel2D* model)
 {
     
     initMargolusNeighborhood(model);
+
+    CA.energy_total = CA.config.force;
     
     CA.energy_row_multiplicator = (CA.energy_total/2) / model->rows;
     
@@ -115,7 +117,7 @@ void initSubstate (CALModel2D* model)
         for (int j = CA.config.x1; j < CA.config.x2; ++j) {
             
             float p = (float)rand()/(float)RAND_MAX;
-            if(p < 0.5f)
+            if(p < 0.2f)
             {
                 
                 p = (float)rand()/(float)RAND_MAX;
